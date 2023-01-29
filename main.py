@@ -1,8 +1,12 @@
-from Funciones.saludoInicial import start
+from asistenteAI.asistente import Asistente
 
 if __name__ == '__main__':
 
-    asistente = asistente.Asistente()
-    asistente.train_model()
+    asistent: Asistente = Asistente()
+    asistent.load_model(asistent.model_name)
+    asistent.greet()
     while True:
-        start()
+        message = asistent.listen()
+        asistent.respond(message)
+
+
