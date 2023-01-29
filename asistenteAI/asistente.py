@@ -1,9 +1,16 @@
+import speech_recognition
 from neuralintents import GenericAssistant
 import pyttsx3
 from pyttsx3 import Engine
 
 
 class Asistente(GenericAssistant):
+    username: str
+    map_function: dict
+    recognizer: speech_recognition.Recognizer
+    _voz: Engine
+    assistant_name: str
+    languages = {"ES": 0, "EN": 1}
 
     def __init__(self):
         self.username = "user"
