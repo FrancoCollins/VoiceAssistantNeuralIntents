@@ -2,6 +2,9 @@ import speech_recognition
 from neuralintents import GenericAssistant
 import pyttsx3
 from pyttsx3 import Engine
+import json
+
+from intentsJSON.intent import intent
 
 
 class Asistente(GenericAssistant):
@@ -66,3 +69,28 @@ class Asistente(GenericAssistant):
             if self.listen().find(self.assistant_name) != -1:
                 shouldHibernate = False
                 self.say(f"Im back! What can I do for you, {self.username}")
+
+    def auto_learn(self, tag: str, pattern: str, response: str):
+        intents = []
+        file = open('./intentsJSON/intents_EN.json', 'r')
+        data = json.load(file)
+        exists = False
+        for element in data['intents']:
+            objectIntent = intent(element['tag'], element['patterns'], element['responses'])
+            intents.append(objectIntent)
+            if objectIntent.tag == tag:
+                exists = True
+                if pattern not in objectIntent.patterns:
+                    objectIntent.patterns.append(pattern)
+                if response not in objectIntent.responses:
+                    objectIntent.responses.append(response)
+        file.close()
+
+        with open('./intentsJSON/intents_EN.json', 'w') as file:
+            if not exists:
+                data['intents'].append({
+                    'tag': tag,
+                    'patterns': [pattern],
+                    'responses': [response]})
+            json.dump(data, file, indent=3)
+            file.close()
