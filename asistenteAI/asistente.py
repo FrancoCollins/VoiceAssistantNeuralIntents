@@ -70,7 +70,14 @@ class Asistente(GenericAssistant):
                 shouldHibernate = False
                 self.say(f"Im back! What can I do for you, {self.username}")
 
-    def auto_learn(self, tag: str, pattern: str, response: str):
+    def auto_learn(self, tag: str, pattern: str, response: str) -> None:
+        """This method adds tags, patterns and responses given by the user\n
+        and the searches result in the Intents JSON file\n
+        if the tag already exists it appends the partern and response in the object
+
+        tag :arg -> is the identifier for the intention of the user, is how it is labeled in the JSON file\n
+        pattern: arg -> is the pattern the user gave to the assistant, the user expressions
+        response :arg -> is the response found by the assistant to the user pattern"""
         intents = []
         file = open('./intentsJSON/intents_EN.json', 'r')
         data = json.load(file)
@@ -94,3 +101,6 @@ class Asistente(GenericAssistant):
                     'responses': [response]})
             json.dump(data, file, indent=3)
             file.close()
+
+        self.train_model()
+        self.save_model()
