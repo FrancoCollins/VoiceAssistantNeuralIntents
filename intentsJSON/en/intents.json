@@ -387,26 +387,6 @@
          "responses": [
             "I was made in 2023, if that's what you are asking!"
          ]
-      },
-      {
-         "tag": "test autolearn 1.0",
-         "patterns": [
-            "testeando pattern 1.0 ",
-            "testeando pattern 2.0 "
-         ],
-         "responses": [
-            "testeando response 1.0",
-            "testeando response 2.0"
-         ]
-      },
-      {
-         "tag": "test autolearn 2.0",
-         "patterns": [
-            "testeando pattern 1.0 "
-         ],
-         "responses": [
-            "testeando response 1.0"
-         ]
       }
    ]
 }

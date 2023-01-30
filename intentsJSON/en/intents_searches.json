@@ -1,0 +1,13 @@
+{
+  "intents": [
+    {
+       "tag": "test autolearn 2.0",
+       "patterns": [
+          "testeando pattern 1.0 "
+       ],
+       "responses": [
+          "testeando response 1.0"
+       ]
+    }
+  ]
+}

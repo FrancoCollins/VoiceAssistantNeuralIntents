@@ -48,3 +48,4 @@ urllib3==1.26.14
 Werkzeug==2.2.2
 wrapt==1.14.1
 xneuralintents==0.0.6
+wikipedia~=1.4.0

@@ -2,9 +2,13 @@ import speech_recognition
 from neuralintents import GenericAssistant
 import pyttsx3
 from pyttsx3 import Engine
+import wikipedia
 import json
 
+import search
 from intentsJSON.intent import intent
+
+languages = {"es": 0, "en": 1}
 
 
 class Asistente(GenericAssistant):
@@ -13,28 +17,34 @@ class Asistente(GenericAssistant):
     recognizer: speech_recognition.Recognizer
     _voz: Engine
     assistant_name: str
-    languages = {"ES": 0, "EN": 1}
+    language = "en"
 
     def __init__(self):
         self.username = "user"
-        self.functions_map = {'goodbye': self.hibernate}
-        GenericAssistant.__init__(self, intents='./intentsJSON/intents_EN.json', intent_methods=self.functions_map)
+        self.functions_map = {'goodbye': self.hibernate, 'google': self.google_search}
+        GenericAssistant.__init__(self, intents=f'./intentsJSON/{self.language}/intents.json', intent_methods=self.functions_map)
         self.recognizer = speech_recognition.Recognizer()
         self._voz = pyttsx3.init()
-        voice = self._voz.getProperty('voices')
-        self._voz.setProperty('voice', voice[self.languages["EN"]].id)
+
+        # noinspection PyTypeChecker
+        voice: list = self._voz.getProperty('voices')
+
+        self._voz.setProperty('voice', voice[languages[self.language]].id)
         self._voz.setProperty('rate', 150)
+
+        wikipedia.set_lang("en")
+
         self.assistant_name = "assistant"
 
     def say(self, string: str) -> None:
         """Outputs the string simulating the assistant's voice\n
-        string :arg -> The message the assistant is will give as audio output"""
+        :arg string The message the assistant is will give as audio output"""
         self._voz.say(string)
         self._voz.runAndWait()
 
     def respond(self, command: str) -> None:
-        """ Executes the command given by the user\n
-         command :arg -> The command given by the user"""
+        """ Executes the command given by the user.
+        :arg command The command given by the user"""
         answer = self.request(command)
         if answer is not None:
             self.say(answer)
@@ -46,12 +56,12 @@ class Asistente(GenericAssistant):
 
     def listen(self) -> str:
         """ Starts listening to user input.\n
-            Returns the message heard. """
+            Returns the message heard."""
         try:
             with speech_recognition.Microphone() as mic:
                 self.recognizer.adjust_for_ambient_noise(mic, duration=0.5)
                 audio = self.recognizer.listen(mic)
-                mensaje = self.recognizer.recognize_google(audio, language="es-US")
+                mensaje = self.recognizer.recognize_google(audio, language="en-US")
                 mensaje = mensaje.lower()
 
             return mensaje
@@ -63,11 +73,11 @@ class Asistente(GenericAssistant):
         """ Enters a hibernation state.\n
             To get out of hibernation, the user should call
             the assistant by name."""
-        shouldHibernate = True
+        should_hibernate = True
         self.say("Hibernating")
-        while shouldHibernate:
+        while should_hibernate:
             if self.listen().find(self.assistant_name) != -1:
-                shouldHibernate = False
+                should_hibernate = False
                 self.say(f"Im back! What can I do for you, {self.username}")
 
     def auto_learn(self, tag: str, pattern: str, response: str) -> None:
@@ -79,21 +89,21 @@ class Asistente(GenericAssistant):
         pattern: arg -> is the pattern the user gave to the assistant, the user expressions
         response :arg -> is the response found by the assistant to the user pattern"""
         intents = []
-        file = open('./intentsJSON/intents_EN.json', 'r')
+        file = open(f'./intentsJSON/{self.language}/intents_searches.json', 'r')
         data = json.load(file)
         exists = False
         for element in data['intents']:
-            objectIntent = intent(element['tag'], element['patterns'], element['responses'])
-            intents.append(objectIntent)
-            if objectIntent.tag == tag:
+            object_intent = intent(element['tag'], element['patterns'], element['responses'])
+            intents.append(object_intent)
+            if object_intent.tag == tag:
                 exists = True
-                if pattern not in objectIntent.patterns:
-                    objectIntent.patterns.append(pattern)
-                if response not in objectIntent.responses:
-                    objectIntent.responses.append(response)
+                if pattern not in object_intent.patterns:
+                    object_intent.patterns.append(pattern)
+                if response not in object_intent.responses:
+                    object_intent.responses.append(response)
         file.close()
 
-        with open('./intentsJSON/intents_EN.json', 'w') as file:
+        with open('./intentsJSON/intents.json', 'w') as file:
             if not exists:
                 data['intents'].append({
                     'tag': tag,
@@ -102,5 +112,20 @@ class Asistente(GenericAssistant):
             json.dump(data, file, indent=3)
             file.close()
 
+
+
         self.train_model()
         self.save_model()
+
+    def google_search(self):
+
+        self.say("I'm listening...")
+        query = self.listen()
+
+        while query == "Error":
+            self.say("I couldn't hear you. Please say it again.")
+            query = self.listen()
+
+        result = search.search(query, language=self.language)
+
+        self.say(result)
