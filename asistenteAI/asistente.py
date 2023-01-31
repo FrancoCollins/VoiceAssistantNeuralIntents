@@ -1,10 +1,8 @@
+import json
+import pyttsx3
 import speech_recognition
 from neuralintents import GenericAssistant
-import pyttsx3
 from pyttsx3 import Engine
-import wikipedia
-import json
-
 import search
 from intentsJSON.intent import intent
 
@@ -22,7 +20,8 @@ class Asistente(GenericAssistant):
     def __init__(self):
         self.username = "user"
         self.functions_map = {'goodbye': self.hibernate, 'google': self.google_search}
-        GenericAssistant.__init__(self, intents=f'./intentsJSON/{self.language}/intents.json', intent_methods=self.functions_map)
+        GenericAssistant.__init__(self, intents=f'./intentsJSON/{self.language}/intents.json',
+                                  intent_methods=self.functions_map)
         self.recognizer = speech_recognition.Recognizer()
         self._voz = pyttsx3.init()
 
@@ -32,19 +31,17 @@ class Asistente(GenericAssistant):
         self._voz.setProperty('voice', voice[languages[self.language]].id)
         self._voz.setProperty('rate', 150)
 
-        wikipedia.set_lang("en")
-
         self.assistant_name = "assistant"
 
     def say(self, string: str) -> None:
         """Outputs the string simulating the assistant's voice\n
-        :arg string The message the assistant is will give as audio output"""
+        String :arg -> The message the assistant is will give as audio output"""
         self._voz.say(string)
         self._voz.runAndWait()
 
     def respond(self, command: str) -> None:
         """ Executes the command given by the user.
-        :arg command The command given by the user"""
+        command :arg command The command given by the user"""
         answer = self.request(command)
         if answer is not None:
             self.say(answer)
@@ -71,16 +68,19 @@ class Asistente(GenericAssistant):
 
     def hibernate(self) -> None:
         """ Enters a hibernation state.\n
-            To get out of hibernation, the user should call
-            the assistant by name."""
+            To get out of hibernation, and takes that time
+             to train and save the IA model, the user should call
+            the assistant by name to end the hibernation state."""
         should_hibernate = True
         self.say("Hibernating")
+        self.train_model()
+        self.save_model()
         while should_hibernate:
             if self.listen().find(self.assistant_name) != -1:
                 should_hibernate = False
                 self.say(f"Im back! What can I do for you, {self.username}")
 
-    def auto_learn(self, tag: str, pattern: str, response: str) -> None:
+    def auto_learn(self, tag: str, pattern: [str], response: str) -> None:
         """This method adds tags, patterns and responses given by the user\n
         and the searches result in the Intents JSON file\n
         if the tag already exists it appends the partern and response in the object
@@ -89,7 +89,7 @@ class Asistente(GenericAssistant):
         pattern: arg -> is the pattern the user gave to the assistant, the user expressions
         response :arg -> is the response found by the assistant to the user pattern"""
         intents = []
-        file = open(f'./intentsJSON/{self.language}/intents_searches.json', 'r')
+        file = open(f'./intentsJSON/{self.language}/intents.json', 'r')
         data = json.load(file)
         exists = False
         for element in data['intents']:
@@ -103,19 +103,14 @@ class Asistente(GenericAssistant):
                     object_intent.responses.append(response)
         file.close()
 
-        with open('./intentsJSON/intents.json', 'w') as file:
+        with open(f'./intentsJSON/{self.language}/intents.json', 'w') as file:
             if not exists:
                 data['intents'].append({
                     'tag': tag,
-                    'patterns': [pattern],
+                    'patterns': pattern,
                     'responses': [response]})
             json.dump(data, file, indent=3)
             file.close()
-
-
-
-        self.train_model()
-        self.save_model()
 
     def google_search(self):
 
@@ -126,6 +121,6 @@ class Asistente(GenericAssistant):
             self.say("I couldn't hear you. Please say it again.")
             query = self.listen()
 
-        result = search.search(query, language=self.language)
+        result = search.search(self, query, language=self.language)
 
         self.say(result)

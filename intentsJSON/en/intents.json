@@ -5,12 +5,10 @@
          "patterns": [
             "google",
             "search",
-            "internet",
-            "testeando pattern 112221.0 "
+            "internet"
          ],
          "responses": [
-            "Redirecting to Google...",
-            "testeando response 111221.0"
+            "Redirecting to Google..."
          ]
       },
       {
@@ -82,7 +80,7 @@
             "What support is offered"
          ],
          "responses": [
-            "I am a general purpose chatbot. My capabilities are : \n 1. I can chat with you. Try asking me for jokes or riddles! \n 2. Ask me the date and time \n 3. I can google search for you. Use format google: your query \n 4. I can get the present weather for any city. Use format weather: city name \n 5. I can get you the top 10 trending news in India. Use keywords 'Latest News' \n 6. I can get you the top 10 trending songs globally. Type 'songs' \n 7. I can set a timer for you. Enter 'set a timer: minutes to timer' \n 8. I can get the present Covid stats for any country. Use 'covid 19: world' or 'covid 19: country name' \n For suggestions to help me improve, send an email to ted.thedlbot.suggestions@gmail.com . Thank you!! "
+            "I am a general purpose chatbot. My capabilities are : \n 1. I can chat with you. Try asking me for jokes or riddles! \n 2. Ask me the date and time \n 3. I can google search for you. Use format google: your query \n 4. I can get the present weather for any city. Use format weather: city name \n 5. I can get you the top 10 trending news in India. Use keywords 'Latest News' \n 6. I can get you the top 10 trending songs globally. Type 'songs' \n 7. I can set a timer for you. Enter 'set a timer: minutes to timer' \n 8. I can get the present Covid stats for any country. Use 'covid 19: world' or 'covid 19: country name' \n For suggestions to help me improve, send an email to francoernestocollins@gmail.com . Thank you!! "
          ]
       },
       {
@@ -386,6 +384,51 @@
          ],
          "responses": [
             "I was made in 2023, if that's what you are asking!"
+         ]
+      },
+      {
+         "tag": "football",
+         "patterns": [
+            "what is football",
+            "tell me definition of football",
+            "tell me about football",
+            "explain football to me",
+            "search football",
+            "google football",
+            "search in internet football"
+         ],
+         "responses": [
+            "\n\nFootball is a family of team sports that involve, to varying degrees, kicking a ball to score a goal.  Unqualified, the word football normally means the form of football that is the most popular where the word is used. Sports commonly called football include association football (known as soccer in North America, Ireland and Australia); gridiron football (specifically American football or Canadian football); Australian rules football; rugby union and rugby league; and Gaelic football. These various forms of football share to varying extent common origins and are known as \"football codes\".\n\n"
+         ]
+      },
+      {
+         "tag": "golf",
+         "patterns": [
+            "what is golf",
+            "tell me definition of golf",
+            "tell me about golf",
+            "explain golf to me",
+            "search golf",
+            "google golf",
+            "search in internet golf"
+         ],
+         "responses": [
+            "\n\nGolf is a club-and-ball sport in which players use various clubs to hit balls into a series of holes on a course in as few strokes as possible.\n\n"
+         ]
+      },
+      {
+         "tag": "basketball",
+         "patterns": [
+            "what is basketball",
+            "tell me definition of basketball",
+            "tell me about basketball",
+            "explain basketball to me",
+            "search basketball",
+            "google basketball",
+            "search in internet basketball"
+         ],
+         "responses": [
+            "\n\nBasketball is a team sport in which two teams, most commonly of five players each, opposing one another on a rectangular court, compete with the primary objective of shooting a basketball (approximately 9.4 inches (24\u00a0cm) in diameter) through the defender's hoop (a basket 18 inches (46\u00a0cm) in diameter mounted 10 feet (3.048\u00a0m) high to a backboard at each end of the court), while preventing the opposing team from shooting through their own hoop. A field goal is worth two points, unless made from behind the three-point line, when it is worth three. After a foul, timed play stops and the player fouled or designated to shoot a technical foul is given one, two or three one-point free throws. The team with the most points at the end of the game wins, but if regulation play expires with the score tied, an additional period of play (overtime) is mandated.\n\n"
          ]
       }
    ]
