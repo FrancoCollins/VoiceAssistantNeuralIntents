@@ -1,10 +1,12 @@
 import json
 import pyttsx3
+import search
+
 import speech_recognition
 from neuralintents import GenericAssistant
 from pyttsx3 import Engine
-import search
 from intentsJSON.intent import intent
+from instagrapi import Client
 
 languages = {"es": 0, "en": 1}
 
@@ -18,8 +20,10 @@ class Asistente(GenericAssistant):
     language = "en"
 
     def __init__(self):
+        self.whatsapp_qr = "whatsapp_qr.png"
         self.username = "user"
-        self.functions_map = {'goodbye': self.hibernate, 'google': self.google_search}
+        self.functions_map = {'goodbye': self.hibernate, 'google': self.google_search,
+                              'instagram': self.send_instagram_direct_by_username}
         GenericAssistant.__init__(self, intents=f'./intentsJSON/{self.language}/intents.json',
                                   intent_methods=self.functions_map)
         self.recognizer = speech_recognition.Recognizer()
@@ -53,7 +57,7 @@ class Asistente(GenericAssistant):
 
     def listen(self) -> str:
         """ Starts listening to user input.\n
-            Returns the message heard."""
+            Returns the meNonessage heard."""
         try:
             with speech_recognition.Microphone() as mic:
                 self.recognizer.adjust_for_ambient_noise(mic, duration=0.5)
@@ -124,3 +128,27 @@ class Asistente(GenericAssistant):
         result = search.search(self, query, language=self.language)
 
         self.say(result)
+
+    def send_instagram_direct_by_username(self):
+        client = self.instragram_connection()
+        self.say("Please tell me the username to send the message")
+        user = self.listen()
+        user_id = client.user_id_from_username(user)
+        self.say("Say the message you want to send")
+        mensaje = self.listen()
+        mensaje = client.direct_send(mensaje, [user_id])
+        self.logout(client)
+
+    def instragram_logout(self, client: Client):
+        client.logout()
+
+    def instagram_login(self) -> Client:
+        with open("../access.txt") as credentials:
+            username, password = credentials.read().splitlines()
+        try:
+            client = Client()
+            client.login(username, password)
+            return client
+        except:
+            print("Error")
+            return None
